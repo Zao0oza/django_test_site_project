@@ -1,7 +1,6 @@
 from django.db import models
 from django.urls import reverse
 
-
 class News(models.Model):
     title = models.CharField(max_length=150, verbose_name='Наименование')
     content = models.TextField(blank=True, verbose_name='Контент')
