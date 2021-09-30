@@ -1,9 +1,11 @@
 from .models import News, Category
 from .forms import NewsForm
 from django.views.generic import ListView, DetailView, CreateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class HomeNews(ListView):
+    paginate_by = 2
     model = News
     template_name = 'news/home_news_list.html'
     context_object_name = 'news'
@@ -14,10 +16,11 @@ class HomeNews(ListView):
         return context
 
     def get_queryset(self):
-        return News.objects.filter(is_published=True)
+        return News.objects.filter(is_published=True).select_related('category')
 
 
 class NewsByCategory(ListView):
+    paginate_by = 5
     model = News
     template_name = 'news/home_news_list.html'
     context_object_name = 'news'
@@ -29,7 +32,7 @@ class NewsByCategory(ListView):
         return context
 
     def get_queryset(self):
-        return News.objects.filter(category_id=self.kwargs['category_id'], is_published=True)
+        return News.objects.filter(category_id=self.kwargs['category_id'], is_published=True).select_related('category')
 
 
 class ViewNews(DetailView):
@@ -37,6 +40,7 @@ class ViewNews(DetailView):
     context_object_name = 'news_item'
 
 
-class CreateNews(CreateView):
+class CreateNews(LoginRequiredMixin, CreateView):
+    login_url = '/admin/'
     form_class = NewsForm
     template_name = 'news/add_news.html'
