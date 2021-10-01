@@ -1,11 +1,13 @@
+from django.shortcuts import render, redirect
+from django.contrib import messages
 from .models import News, Category
 from .forms import NewsForm
 from django.views.generic import ListView, DetailView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-
+from django.contrib.auth.forms import UserCreationForm
 
 class HomeNews(ListView):
-    paginate_by = 2
+    paginate_by = 10
     model = News
     template_name = 'news/home_news_list.html'
     context_object_name = 'news'
@@ -20,7 +22,7 @@ class HomeNews(ListView):
 
 
 class NewsByCategory(ListView):
-    paginate_by = 5
+    paginate_by = 2
     model = News
     template_name = 'news/home_news_list.html'
     context_object_name = 'news'
@@ -44,3 +46,21 @@ class CreateNews(LoginRequiredMixin, CreateView):
     login_url = '/admin/'
     form_class = NewsForm
     template_name = 'news/add_news.html'
+
+
+def register(request):
+    if request.method == 'POST':
+        form= UserCreationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Вы успешно зарегистрировались')
+            return redirect('login')
+        else:
+            messages.error(request, 'Ошибка регистрации')
+    else:
+        form = UserCreationForm()
+    return render(request, 'news/register.html', {'form': form})
+
+
+def login(request):
+    return render(request, 'news/login.html')

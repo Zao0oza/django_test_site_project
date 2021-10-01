@@ -8,7 +8,7 @@
 
 
   <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
-   <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
 
   <title>{% block title %}Новости со всего мира{% endblock %}</title>
@@ -23,22 +23,40 @@
       {% block sidebar %}SIDEBAR{% endblock %}
     </div>
     <div class="col-md-9">
-    {% block content %}CONTENT{% endblock %}
+      {% if messages %}
+      {% for message in messages %}
+      {% if message.tags  == 'error' %}
+      <div class="alert alert-danger" role="alert">
+        {{ message }}
+      </div>
+      {% else %}
+      <div class="alert alert-{{ message.tags }}" role="alert">
+        {{ message }}
+      </div>
+      {% endif %}
+      {% endfor %}
+      {% endif %}
+      {% block content %}CONTENT{% endblock %}
+      {% if page_obj.has_other_pages %}
       <nav aria-label="Page navigation example">
         <ul class="pagination">
-
           {% if page_obj.has_previous %}
           <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Предыдущая</a></li>
           {% endif %}
-
-          <li class="page-item"><a class="page-link">Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</a></li>
+          {% for p in page_obj.paginator.page_range  %}
+          {% if page_obj.number == p %}
+          <li class="page-item active" aria-current="page" href="?page={{ p }}"><a class="page-link"> {{ p }} </a></li>
+          {% elif p > page_obj.number|add:-3 and p < page_obj.number|add:3 %}
+          <li class="page-item" ><a class="page-link" href="?page={{ p }}"> {{ p }} </a></li>
+          {% endif %}
+          {% endfor %}
           {% if page_obj.has_next %}
           <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Следующая</a></li>
-          <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages  }}">Последняя</a></li>
+          <li class="page-item "><a class="page-link" href="?page={{ page_obj.paginator.num_pages  }}">Последняя</a></li>
           {% endif %}
-
         </ul>
       </nav>
+      {% endif %}
     </div>
   </div>
 </div>
