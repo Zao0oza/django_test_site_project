@@ -1,3 +1,8 @@
-#header {
-    color: #26c6da
+#header, .module caption, .inline-group h2 {
+    background: #26c6da
+}
+
+div.breadcrumbs{
+    background: #00bcd4
+
 }

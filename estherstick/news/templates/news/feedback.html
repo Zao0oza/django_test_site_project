@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Login :: {{ block.super }}
+Обратная связь :: {{ block.super }}
 {% endblock %}
 
 {% block sidebar %}
@@ -9,13 +9,13 @@ Login :: {{ block.super }}
 {% endblock %}
 
 {% block content %}
-<h1> Авторизация </h1>
+<h1> Обратная связь </h1>
 
 <form  method="post">
     {% csrf_token %}
     {{ form.as_p }}
 
-    <button type="submit" class="btn btn-primary btn-block">Вход</button>
+    <button type="submit" class="btn btn-primary btn-block">Отправить</button>
 </form>
 
 {% endblock %}
